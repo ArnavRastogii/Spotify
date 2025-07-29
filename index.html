@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Spotify - Web Players</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <link rel="icon" type="image/png" href="img/Spotify_Primary_Logo_RGB_Green.png">
+
+  <style>
+    ::-webkit-scrollbar {
+      display: none;
+    }
+
+    * {
+      font-family: Roboto, Arial, sans-serif;
+    }
+
+    body {
+      background-color: #000;
+      color: white;
+      margin: 0;
+    }
+
+    .navbar {
+      background-color: #000;
+    }
+
+    .search-box {
+      background-color: #121212;
+      border-radius: 30px;
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+
+    .search-input {
+      background-color: transparent;
+      border: none;
+      color: white;
+    }
+
+    .search-input::placeholder {
+      color: #aaa;
+    }
+
+    .icon-btn {
+      background: none;
+      border: none;
+      color: #ccc;
+    }
+
+    .icon-btn:hover {
+      color: white;
+    }
+
+    .nav-link {
+      color: #aaa !important;
+    }
+
+    .nav-link:hover {
+      color: white !important;
+    }
+
+    .btn-login {
+      border-radius: 30px;
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    .sidebar {
+      width: 330px;
+      height: 100vh;
+      background-color: #121212;
+      padding: 20px;
+      overflow-y: auto;
+      position: fixed;
+      top: 56px; 
+      left: 0;
+      bottom: 0;
+    }
+
+    .card-custom {
+      background-color: #242424;
+      border: none;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 15px;
+    }
+
+    .btn-custom {
+      background-color: white;
+      color: black;
+      font-weight: bold;
+      border-radius: 30px;
+      padding: 6px 18px;
+    }
+
+    .footer-links a {
+      color: #b3b3b3;
+      font-size: 12px;
+      text-decoration: none;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .language-btn {
+      background-color: #000;
+      border: 1px solid #fff;
+      border-radius: 30px;
+      padding: 5px 15px;
+      color: white;
+      font-weight: bold;
+      font-size: 14px;
+      margin-top: 20px;
+    }
+
+    .footer-links {
+      margin-top: 40px;
+    }
+
+    .main-content {
+      margin-left: 350px;
+      padding: 30px;
+    }
+
+    .section-title {
+      font-weight: bold;
+      font-size: 22px;
+      margin-bottom: 15px;
+    }
+
+    .show-all {
+      color: #b3b3b3;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .scrolling-wrapper {
+      display: flex;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      padding-bottom: 10px;
+      gap: 20px;
+    }
+
+    .song-card {
+      background-color: #181818;
+      border-radius: 10px;
+      width: 180px;
+      padding: 10px;
+      flex: 0 0 auto;
+    }
+
+    .song-card img {
+      width: 100%;
+      border-radius: 8px;
+    }
+
+    .song-title {
+      font-weight: bold;
+      font-size: 14px;
+      margin-top: 8px;
+      color: white;
+    }
+
+    .song-artist {
+      font-size: 13px;
+      color: #b3b3b3;
+    }
+    .artist-scroll-container {
+      display: flex;
+      overflow-x: auto;
+      scrollbar-width: none; 
+    }
+
+    .artist-scroll-container::-webkit-scrollbar {
+      display: none; 
+    }
+
+    .artist-card {
+      flex: 0 0 auto;
+      width: 160px;
+      margin-right: 25px;
+      text-align: center;
+    }
+
+    .artist-card img {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 10px;
+    }
+
+    .artist-name {
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .artist-role {
+      color: #aaa;
+      font-size: 14px;
+    }
+    .bottom-links {
+      background-color: #151515;
+      padding: 40px 20px;
+    }
+
+    .bottom-links h6 {
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    .bottom-links ul {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    .bottom-links ul li {
+      margin-bottom: 10px;
+      color: #b3b3b3;
+    }
+
+    .bottom-links ul li:hover {
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .social-icons i {
+      font-size: 20px;
+      color: white;
+      margin-right: 15px;
+      transition: 0.3s;
+    }
+
+    .social-icons i:hover {
+      color: #1DB954;
+    }
+
+    .bottom-bar {
+      border-top: 1px solid #3a3a3a;
+      margin-top: 30px;
+      padding-top: 15px;
+      font-size: 14px;
+      color: #b4b4b4;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar px-3 py-2">
+  <div class="container-fluid d-flex align-items-center justify-content-between">
+    <div class="d-flex align-items-center gap-3">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/2/26/Spotify_logo_with_text.svg" height="30" alt="Spotify">
+      <button class="icon-btn"><i class="bi bi-house-door-fill fs-5"></i></button>
+
+      <div class="search-box d-flex align-items-center">
+        <i class="bi bi-search me-2 text-secondary"></i>
+        <input type="text" class="form-control search-input" placeholder="What do you want to play?">
+        <i class="bi bi-archive ms-2 text-secondary"></i>
+      </div>
+    </div>
+
+    <div class="d-flex align-items-center gap-3">
+      <a href="#" class="nav-link">Premium</a>
+      <a href="#" class="nav-link">Support</a>
+      <a href="#" class="nav-link">Download</a>
+      <div class="vr text-secondary"></div>
+      <a href="#" class="nav-link"><i class="bi bi-download"></i> Install App</a>
+      <a href="#" class="nav-link">Sign up</a>
+      <button class="btn btn-light btn-login">Log in</button>
+    </div>
+  </div>
+</nav>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <h6>Your Library</h6>
+  <div class="card-custom">
+    <h6>Create your first playlist</h6>
+    <p class="text-muted">It's easy, we'll help you</p>
+    <button class="btn btn-custom">Create playlist</button>
+  </div>
+
+  <div class="card-custom">
+    <h6>Let's find some podcasts to follow</h6>
+    <p class="text-muted">We'll keep you updated on new episodes</p>
+    <button class="btn btn-custom">Browse podcasts</button>
+  </div>
+
+  <div class="footer-links">
+    <a href="#">Legal</a>
+    <a href="#">Safety & Privacy Center</a>
+    <a href="#">Privacy Policy</a>
+    <a href="#">Cookies</a>
+    <a href="#">About Ads</a>
+    <a href="#">Accessibility</a>
+  </div>
+
+  <a href="#" class="footer-links" style="text-decoration: none; color: #fff;"><small>Cookies</small></a>
+
+  <button class="language-btn d-flex align-items-center gap-2">
+    <span class="bi bi-globe"></span> English
+  </button>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="section-title">Trending songs</h4>
+    <span class="show-all">Show all</span>
+  </div>
+<!---Trending songs -->
+  <div class="scrolling-wrapper">
+    <div class="song-card">
+      <img src="img/trending songs/1.jpg" alt="Saiyaara">
+      <a href="https://open.spotify.com/embed/track/1D35BJlymlh6OLD75WupSF?utm_source=generator">
+      <div class="song-title">Saiyaara (From "Saiyaara")</div>
+      <div class="song-artist">Tanishk Bagchi, Faheem...</div>
+      </a>
+    </div>
+    <div class="song-card">
+      <img src="img/trending songs/2.jpg" alt="Dhun">
+      <a href="https://open.spotify.com/track/1GFQthxDi4Tqe3wJ5j0G5S?si=4bdf291ad7c74fdb">
+      <div class="song-title">Dhun (From "Saiyaara")</div>
+      <div class="song-artist">Mithoon, Arijit Singh</div>
+      </a>
+    </div>
+    <div class="song-card">
+      <img src="img/trending songs/3.jpg" alt="Barbaad">
+      <a href="https://open.spotify.com/track/6G8vN5EUtcDxOXOXadF6kp?si=95d70c690deb4cad">
+      <div class="song-title">Barbaad (From "Saiyaara")</div>
+      <div class="song-artist">The Rish, Jubin Nautiyal</div>
+      </a>
+    </div>
+    <div class="song-card">
+      <img src="img/trending songs/4.jpg" alt="Tum Ho Toh">
+      <div class="song-title">Tum Ho Toh (From "Saiyaara")</div>
+      <div class="song-artist">Vishal Mishra, Hansika...</div>
+    </div>
+    <div class="song-card">
+      <img src="img/trending songs/5.jpg" alt="Humsafar">
+      <div class="song-title">Humsafar (From "Saiyaara")</div>
+      <div class="song-artist">Sachet-Parampara, Sachet...</div>
+    </div>
+    <div class="song-card">
+      <img src="img/trending songs/6.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+    <div class="song-card">
+      <img src="img/trending songs/7.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+    <div class="song-card">
+      <img src="img/trending songs/8.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+    <div class="song-card">
+      <img src="img/trending songs/9.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+    <div class="song-card">
+      <img src="img/trending songs/10.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+    <div class="song-card">
+      <img src="img/trending songs/11.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+    <div class="song-card">
+      <img src="img/trending songs/12.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+    <div class="song-card">
+      <img src="img/trending songs/13.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+    <div class="song-card">
+      <img src="img/trending songs/14.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+  </div>
+</div>
+<!--Popular artist-->
+<div class="main-content">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="section-title">Popular Artist</h4>
+    <span class="show-all">Show all</span>
+    </div>
+ <div class="artist-scroll-container">
+      <!-- Artist Cards -->
+      <div class="artist-card">
+        <img src="img/artist/1.jpg" alt="Pritam">
+        <div class="artist-name">Pritam</div>
+        <div class="artist-role">Artist</div>
+      </div>
+
+      <div class="artist-card">
+        <img src="img/artist/2.jpg" alt="A.R. Rahman">
+        <div class="artist-name">A.R. Rahman</div>
+        <div class="artist-role">Artist</div>
+      </div>
+
+      <div class="artist-card">
+        <img src="img/artist/3.jpg" alt="Arijit Singh">
+        <div class="artist-name">Arijit Singh</div>
+        <div class="artist-role">Artist</div>
+      </div>
+
+      <div class="artist-card">
+        <img src="img/artist/4.jpg" alt="Sachin-Jigar">
+        <div class="artist-name">Sachin-Jigar</div>
+        <div class="artist-role">Artist</div>
+      </div>
+
+      <div class="artist-card">
+        <img src="img/artist/5.jpg" alt="Vishal-Shekhar">
+        <div class="artist-name">Vishal-Shekhar</div>
+        <div class="artist-role">Artist</div>
+      </div>
+
+      <div class="artist-card">
+        <img src="img/artist/6.jpg" alt="Atif Aslam">
+        <div class="artist-name">Atif Aslam</div>
+        <div class="artist-role">Artist</div>
+      </div>
+
+      <div class="artist-card">
+        <img src="img/artist/7.jpg" alt="Shreya Ghoshal">
+        <div class="artist-name">Shreya Ghoshal</div>
+        <div class="artist-role">Artist</div>
+      </div>
+
+      <div class="artist-card">
+        <img src="img/artist/2.jpg" alt="KK">
+        <div class="artist-name">KK</div>
+        <div class="artist-role">Artist</div>
+      </div>
+
+      <div class="artist-card">
+        <img src="img/artist/3.jpg" alt="Sonu Nigam">
+        <div class="artist-name">Sonu Nigam</div>
+        <div class="artist-role">Artist</div>
+      </div>
+
+      <div class="artist-card">
+        <img src="img/artist/4.jpg" alt="Udit Narayan">
+        <div class="artist-name">Udit Narayan</div>
+        <div class="artist-role">Artist</div>
+      </div>
+ </div>
+    </div>
+  </div>
+
+  <div class="main-content">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="section-title">Popular Albumns and singles</h4>
+    <span class="show-all">Show all</span>
+  </div>
+<!---Popular Albumns and singles -->
+  <div class="scrolling-wrapper">
+    <div class="song-card">
+      <img src="img/singles/1.jpg" alt="Saiyaara">
+      <div class="song-title">Saiyaara (From "Saiyaara")</div>
+      <div class="song-artist">Tanishk Bagchi, Faheem...</div>
+    </div>
+    <div class="song-card">
+      <img src="img/singles/2.jpg" alt="Dhun">
+      <div class="song-title">Dhun (From "Saiyaara")</div>
+      <div class="song-artist">Mithoon, Arijit Singh</div>
+    </div>
+    <div class="song-card">
+      <img src="img/trending songs/1.jpg" alt="Barbaad">
+      <div class="song-title">Barbaad (From "Saiyaara")</div>
+      <div class="song-artist">The Rish, Jubin Nautiyal</div>
+    </div>
+    <div class="song-card">
+      <img src="img/trending songs/10.jpg" alt="Tum Ho Toh">
+      <div class="song-title">Tum Ho Toh (From "Saiyaara")</div>
+      <div class="song-artist">Vishal Mishra, Hansika...</div>
+    </div>
+    <div class="song-card">
+      <img src="img/trending songs/11.jpg" alt="Humsafar">
+      <div class="song-title">Humsafar (From "Saiyaara")</div>
+      <div class="song-artist">Sachet-Parampara, Sachet...</div>
+    </div>
+    <div class="song-card">
+      <img src="img/trending songs/9.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+    <div class="song-card">
+      <img src="img/trending songs/8.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+    <div class="song-card">
+      <img src="img/trending songs/12.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+    <div class="song-card">
+      <img src="img/trending songs/7.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+    <div class="song-card">
+      <img src="img/trending songs/6.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+    <div class="song-card">
+      <img src="img/trending songs/5.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+    <div class="song-card">
+      <img src="img/trending songs/13.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+    <div class="song-card">
+      <img src="img/trending songs/14.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+    <div class="song-card">
+      <img src="img/trending songs/3.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+  </div>
+</div>
+
+
+ <div class="main-content">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="section-title">Popular Radios</h4>
+    <span class="show-all">Show all</span>
+  </div>
+<!---Popular Radios -->
+  <div class="scrolling-wrapper">
+    <div class="song-card">
+      <img src="img/Radio/1.jpg" alt="Saiyaara">
+      <div class="song-title">Saiyaara (From "Saiyaara")</div>
+      <div class="song-artist">Tanishk Bagchi, Faheem...</div>
+    </div>
+    <div class="song-card">
+      <img src="img/Radio/2.jpg" alt="Dhun">
+      <div class="song-title">Dhun (From "Saiyaara")</div>
+      <div class="song-artist">Mithoon, Arijit Singh</div>
+    </div>
+    <div class="song-card">
+      <img src="img/Radio/3.jpg" alt="Barbaad">
+      <div class="song-title">Barbaad (From "Saiyaara")</div>
+      <div class="song-artist">The Rish, Jubin Nautiyal</div>
+    </div>
+    <div class="song-card">
+      <img src="img/Radio/4.jpg" alt="Tum Ho Toh">
+      <div class="song-title">Tum Ho Toh (From "Saiyaara")</div>
+      <div class="song-artist">Vishal Mishra, Hansika...</div>
+    </div>
+    <div class="song-card">
+      <img src="img/Radio/5.jpg" alt="Humsafar">
+      <div class="song-title">Humsafar (From "Saiyaara")</div>
+      <div class="song-artist">Sachet-Parampara, Sachet...</div>
+    </div>
+    <div class="song-card">
+      <img src="img/Radio/6.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+    <div class="song-card">
+      <img src="img/Radio/7.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+    <div class="song-card">
+      <img src="img/Radio/1.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+    <div class="song-card">
+      <img src="img/Radio/2.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+    <div class="song-card">
+      <img src="img/Radio/3.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+    <div class="song-card">
+      <img src="img/Radio/4.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+    <div class="song-card">
+      <img src="img/Radio/5.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+    <div class="song-card">
+      <img src="img/Radio/6.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+    <div class="song-card">
+      <img src="img/Radio/7.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+  </div>
+</div>
+
+ <div class="main-content">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="section-title">Featured Charts</h4>
+    <span class="show-all">Show all</span>
+  </div>
+<!---Featured Charts -->
+  <div class="scrolling-wrapper">
+    <div class="song-card">
+      <img src="img/top 50/1.jpg" alt="Saiyaara">
+      <div class="song-title">Saiyaara (From "Saiyaara")</div>
+      <div class="song-artist">Tanishk Bagchi, Faheem...</div>
+    </div>
+    <div class="song-card">
+      <img src="img/top 50/2.jpg" alt="Dhun">
+      <div class="song-title">Dhun (From "Saiyaara")</div>
+      <div class="song-artist">Mithoon, Arijit Singh</div>
+    </div>
+    <div class="song-card">
+      <img src="img/top 50/3.jpg" alt="Barbaad">
+      <div class="song-title">Barbaad (From "Saiyaara")</div>
+      <div class="song-artist">The Rish, Jubin Nautiyal</div>
+    </div>
+    <div class="song-card">
+      <img src="img/top 50/4.jpg" alt="Tum Ho Toh">
+      <div class="song-title">Tum Ho Toh (From "Saiyaara")</div>
+      <div class="song-artist">Vishal Mishra, Hansika...</div>
+    </div>
+    <div class="song-card">
+      <img src="img/top 50/5.jpg" alt="Humsafar">
+      <div class="song-title">Humsafar (From "Saiyaara")</div>
+      <div class="song-artist">Sachet-Parampara, Sachet...</div>
+    </div>
+    <div class="song-card">
+      <img src="img/top 50/6.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+    <div class="song-card">
+      <img src="himg/top 50/1.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+    <div class="song-card">
+      <img src="img/top 50/2.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+    <div class="song-card">
+      <img src="img/top 50/3.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+    <div class="song-card">
+      <img src="img/top 50/4.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+    <div class="song-card">
+      <img src="img/top 50/5.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+    <div class="song-card">
+      <img src="img/top 50/6.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+    <div class="song-card">
+      <img src="img/top 50/1.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+    <div class="song-card">
+      <img src="img/top 50/2.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+  </div>
+</div>
+
+
+ <div class="main-content">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="section-title">India's Best</h4>
+    <span class="show-all">Show all</span>
+  </div>
+<!---India's Best -->
+  <div class="scrolling-wrapper">
+    <div class="song-card">
+      <img src="img/Indias Best/1.jpg" alt="Saiyaara">
+      <div class="song-title">Saiyaara (From "Saiyaara")</div>
+      <div class="song-artist">Tanishk Bagchi, Faheem...</div>
+    </div>
+    <div class="song-card">
+      <img src="img/Indias Best/2.jpg" alt="Dhun">
+      <div class="song-title">Dhun (From "Saiyaara")</div>
+      <div class="song-artist">Mithoon, Arijit Singh</div>
+    </div>
+    <div class="song-card">
+      <img src="img/Indias Best/3.jpg" alt="Barbaad">
+      <div class="song-title">Barbaad (From "Saiyaara")</div>
+      <div class="song-artist">The Rish, Jubin Nautiyal</div>
+    </div>
+    <div class="song-card">
+      <img src="img/Indias Best/4.jpg" alt="Tum Ho Toh">
+      <div class="song-title">Tum Ho Toh (From "Saiyaara")</div>
+      <div class="song-artist">Vishal Mishra, Hansika...</div>
+    </div>
+    <div class="song-card">
+      <img src="img/Indias Best/5.jpg" alt="Humsafar">
+      <div class="song-title">Humsafar (From "Saiyaara")</div>
+      <div class="song-artist">Sachet-Parampara, Sachet...</div>
+    </div>
+    <div class="song-card">
+      <img src="img/Indias Best/6.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+    <div class="song-card">
+      <img src="img/Indias Best/7.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+    <div class="song-card">
+      <img src="img/Indias Best/8.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+    <div class="song-card">
+      <img src="img/Indias Best/9.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+    <div class="song-card">
+      <img src="img/Indias Best/10.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+    <div class="song-card">
+      <img src="img/Indias Best/1.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+    <div class="song-card">
+      <img src="img/Indias Best/2.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+    <div class="song-card">
+      <img src="img/Indias Best/3.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+    <div class="song-card">
+      <img src="img/Indias Best/4.jpg" alt="Sahiba">
+      <div class="song-title">Sahiba</div>
+      <div class="song-artist">Aditya Rikhari</div>
+    </div>
+  </div>
+</div>
+
+  <!-- Start of Bottom Links Section -->
+  <section class="bottom-links">
+    <div class="container" style=" margin-left: 350px;">
+      <div class="row text-start">
+        <div class="col-6 col-md-3 mb-4">
+          <h6>Company</h6>
+          <ul>
+            <li>About</li>
+            <li>Jobs</li>
+            <li>For the Record</li>
+          </ul>
+        </div>
+        <div class="col-6 col-md-3 mb-4">
+          <h6>Communities</h6>
+          <ul>
+            <li>For Artists</li>
+            <li>Developers</li>
+            <li>Advertising</li>
+            <li>Investors</li>
+            <li>Vendors</li>
+          </ul>
+        </div>
+        <div class="col-6 col-md-3 mb-4">
+          <h6>Useful links</h6>
+          <ul>
+            <li>Support</li>
+            <li>Free Mobile App</li>
+            <li>Popular by Country</li>
+          </ul>
+        </div>
+        <div class="col-6 col-md-3 mb-4">
+          <h6>Spotify Plans</h6>
+          <ul>
+            <li>Premium Individual</li>
+            <li>Premium Duo</li>
+            <li>Premium Family</li>
+            <li>Premium Student</li>
+            <li>Spotify Free</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="row justify-content-between align-items-center bottom-bar mt-4">
+        <div class="col-md-6 text-md-start text-center mb-3 mb-md-0">
+          © 2025 Spotify AB
+        </div>
+        <div class="col-md-6 text-md-end text-center social-icons">
+          <i class="fab fa-instagram"></i>
+          <i class="fab fa-twitter"></i>
+          <i class="fab fa-facebook-f"></i>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
